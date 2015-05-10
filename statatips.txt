@@ -1,0 +1,31 @@
+*===== Tips & Stata-koder
+
+*Åben QoG datasættet
+encode cname, generate(country)   //Generer en meningsfuld landevariabel (ellers er den string)
+order country, after(year)        //Flytter den til det rigtige sted i editoren
+tsset country year                //Sætter stata til panel-data :D Her starter (den færdelige) fest!
+
+* Et problem i QoG er at der er så mange og så mange år! 
+* Generelt kan det løses ved snedig brug af kommandoer i følgende stil:
+codebook country, tab(211)    //Find de lande (kræver "cname" er blevet encoded)
+drop if country != 12         //Sletter alle lande undtagn "nummer 12"    (!= betyder "anderledes end")
+drop if year > 2000
+
+* For dem med lidt mere glæde ved stata har jeg skrevet følgende program, som jeg virkelig vil anbefale.
+* (Det er også sjvot at lave sine egne stata-programmer! Så går ting 100x hurtigere! flipvar, autoscale & regplot er fan favorites!
+
+program define qogdrop                  //Definere programmet "qogdrop"
+	  gen mark = .                        //Laver en variabel der markere de lande man ønsker at beholde
+	foreach num of numlist `0' {          //Starter kommando-loopet med en tal-liste over de lande man ønsker at beholde
+		recode mark (.=1) if cnt == `num'   //Markere alle de lande man ønsker at beholde
+	}
+	  drop if mark != 1                   //Dropper alle lande der ikke er markeret
+	  drop mark                           //Oprydning, fjerner markeringer
+codebook country, t(211)                    //Viser resultat af kommandoen i en codebook
+end
+
+* Programmet "qogdrop" virker cirka som følgende:
+*   1) Først bruge "codebook country, tab(211)" til at finde alle de lande man gerne vil have
+*   2) Så skrives "qogdrop 49 62 136 177" for at droppe alle andre lande end f.eks. Danmark, Finland, Norge & Sverige
+*   3) Enjoy super-hurtig skåret komparativ analyse!
+

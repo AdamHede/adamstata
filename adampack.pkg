@@ -1,0 +1,9 @@
+v 3
+d adampack. program pakke til forskellige smarte ting!
+d Program by Adam Hede, Aarhus Universitet
+d Distribution-Date: 02 05 2013
+f rescale.ado
+f flip.ado
+f autoindex.ado
+f regplot.ado
+f qogdrop.ado
